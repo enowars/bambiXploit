@@ -1,4 +1,3 @@
-use std::{collections::HashMap, sync::Arc};
 use std::env;
 use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -10,13 +9,15 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
+use std::{collections::HashMap, sync::Arc};
 
 use clap::{App, AppSettings, Arg};
 use config::LoadConfigError;
-use tui::{Terminal, backend::CrosstermBackend};
+use tui::Terminal;
 
 mod config;
 mod exploits;
+mod stats;
 mod submit;
 mod templates;
 mod ui;
@@ -45,9 +46,14 @@ fn main() -> Result<(), LoadConfigError> {
         .get_matches();
 
     let config = config::load_config(matches.value_of("config"))?;
-    let command: Vec<String> = matches.values_of("command").unwrap().map(String::from).collect();
-    ui::initialize()?;
+    let command: Vec<String> = matches
+        .values_of("command")
+        .unwrap()
+        .map(String::from)
+        .collect();
+    let stats = Arc::new(stats::BambiStats::new());
+    ui::initialize(stats.clone())?;
 
-    exploits::run(Arc::new(command), Arc::new(config));
+    exploits::run(Arc::new(command), Arc::new(config), stats);
     Ok(())
 }
