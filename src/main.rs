@@ -3,19 +3,15 @@ use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{IpAddr, TcpStream};
 use std::process::{exit, Command, Stdio};
-use std::str;
-use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
-use std::thread;
-use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 use std::{collections::HashMap, sync::Arc};
 
 use clap::{App, AppSettings, Arg};
 use config::LoadConfigError;
-use tui::Terminal;
 
 mod config;
+mod events;
 mod exploits;
 mod stats;
 mod submit;

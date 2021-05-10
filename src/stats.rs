@@ -10,6 +10,10 @@ impl BambiStats {
         self.ok_flags.fetch_add(diff, Ordering::Relaxed);
     }
 
+    pub fn get_ok(&self) -> u64 {
+        self.ok_flags.load(Ordering::Relaxed)
+    }
+
     pub fn new() -> Self {
         BambiStats {
             ok_flags: AtomicU64::new(0),
