@@ -40,6 +40,7 @@ impl Events {
         let tick_handle = spawn(move || loop {
             std::thread::sleep(EVENT_CONFIG.tick_rate);
             if let Err(e) = sender.send(Event::Tick) {
+                // TODO: log eror somewhere
                 break;
             }
         });
@@ -51,6 +52,7 @@ impl Events {
             for key in stdin.keys() {
                 if let Ok(key) = key {
                     if let Err(e) = sender.send(Event::Input(key)) {
+                        // TODO: log error somewhere
                         break;
                     }
                 }
